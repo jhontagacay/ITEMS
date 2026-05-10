@@ -1,0 +1,19 @@
+{% extends 'ems/base.html' %}
+{% block title %}Delete {{ type }}{% endblock %}
+{% block page_title %}Delete {{ type }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5">
+        <div class="form-card text-center">
+            <div style="font-size:3rem;margin-bottom:.5rem;">🗑️</div>
+            <h5>Delete {{ type }}?</h5>
+            <p class="text-muted">Are you sure you want to delete <strong>{{ obj }}</strong>? This cannot be undone.</p>
+            <form method="post" class="d-flex gap-2 justify-content-center mt-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                <a href="{% url 'equipment_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

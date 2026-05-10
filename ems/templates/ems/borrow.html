@@ -1,0 +1,62 @@
+{% extends 'ems/base.html' %}
+{% block title %}New Borrow Transaction{% endblock %}
+{% block page_title %}New Borrow Transaction{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="form-card">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Equipment <span class="text-danger">*</span></label>
+                    {{ form.equipment }}
+                    {% if form.equipment.errors %}<div class="text-danger" style="font-size:.8rem;">{{ form.equipment.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Borrower Name <span class="text-danger">*</span></label>
+                        {{ form.borrower_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Department <span class="text-danger">*</span></label>
+                        {{ form.department }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Purpose <span class="text-danger">*</span></label>
+                    {{ form.purpose }}
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Date & Time Borrowed</label>
+                        {{ form.date_borrowed }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Expected Return</label>
+                        {{ form.expected_return }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Released By <span class="text-danger">*</span></label>
+                    {{ form.released_by }}
+                </div>
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn" style="background:#1a4db3;color:#fff;"><i class="bi bi-box-arrow-right me-2"></i>Record Borrow</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

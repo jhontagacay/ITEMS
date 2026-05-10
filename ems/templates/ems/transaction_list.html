@@ -1,0 +1,72 @@
+{% extends 'ems/base.html' %}
+{% block title %}Transaction History{% endblock %}
+{% block page_title %}History / Logs{% endblock %}
+
+{% block content %}
+<div class="table-card">
+    <div class="tc-head">
+        <span><i class="bi bi-clock-history me-2"></i>All Transactions</span>
+    </div>
+
+    <div class="p-3 border-bottom">
+        <form method="get">
+            <div class="row g-2">
+                <div class="col-md-3">{{ form.search }}</div>
+                <div class="col-md-2">{{ form.department }}</div>
+                <div class="col-md-2">{{ form.status }}</div>
+                <div class="col-md-2">{{ form.date_from }}</div>
+                <div class="col-md-2">{{ form.date_to }}</div>
+                <div class="col-md-1 d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary w-100">Filter</button>
+                </div>
+            </div>
+            {% if request.GET %}
+            <a href="{% url 'transaction_list' %}" class="btn btn-sm btn-link text-muted mt-1">Clear filters</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Equipment</th>
+                <th>Borrower</th>
+                <th>Department</th>
+                <th>Borrowed</th>
+                <th>Returned</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for t in transactions %}
+            <tr>
+                <td class="text-muted" style="font-size:.78rem;">{{ t.pk }}</td>
+                <td><strong>{{ t.equipment.name }}</strong><br><small class="text-muted">{{ t.equipment.serial_number }}</small></td>
+                <td>{{ t.borrower_name }}</td>
+                <td>{{ t.department }}</td>
+                <td style="font-size:.82rem;">{{ t.date_borrowed|date:"M d, Y" }}<br><span class="text-muted">{{ t.date_borrowed|date:"H:i" }}</span></td>
+                <td style="font-size:.82rem;">
+                    {% if t.date_returned %}{{ t.date_returned|date:"M d, Y" }}<br><span class="text-muted">{{ t.date_returned|date:"H:i" }}</span>
+                    {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-{{ t.status }} rounded-pill">{{ t.get_status_display }}</span>
+                    {% if t.is_overdue %}<br><span class="badge badge-overdue rounded-pill mt-1" style="font-size:.7rem;">Overdue</span>{% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'transaction_detail' t.pk %}" class="btn btn-sm btn-outline-secondary" style="font-size:.75rem;">View</a>
+                    {% if t.status == 'ongoing' %}
+                    <a href="{% url 'borrow_return' t.pk %}" class="btn btn-sm btn-outline-success ms-1" style="font-size:.75rem;">Return</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8" class="text-center text-muted py-5">No transactions found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

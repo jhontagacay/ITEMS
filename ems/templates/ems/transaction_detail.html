@@ -1,0 +1,66 @@
+{% extends 'ems/base.html' %}
+{% block title %}Transaction #{{ txn.pk }}{% endblock %}
+{% block page_title %}Transaction Detail{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="mb-0">Transaction #{{ txn.pk }}</h5>
+            <span class="badge badge-{{ txn.status }} rounded-pill px-3" style="font-size:.85rem;">{{ txn.get_status_display }}</span>
+        </div>
+
+        <div class="form-card mb-3">
+            <h6 class="text-muted mb-3" style="font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;">Equipment</h6>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="fw-600" style="font-size:1.05rem;">{{ txn.equipment.name }}</div>
+                    <div class="text-muted" style="font-size:.83rem;">S/N: {{ txn.equipment.serial_number }}</div>
+                    {% if txn.equipment.category %}
+                    <div class="text-muted" style="font-size:.83rem;">{{ txn.equipment.category }}</div>{% endif %}
+                </div>
+                <span class="badge badge-{{ txn.equipment.status }} rounded-pill h-100">{{ txn.equipment.get_status_display }}</span>
+            </div>
+        </div>
+
+        <div class="form-card mb-3">
+            <h6 class="text-muted mb-3" style="font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;">Borrow Info</h6>
+            <div class="row g-2" style="font-size:.88rem;">
+                <div class="col-5 text-muted">Borrower</div><div class="col-7"><strong>{{ txn.borrower_name }}</strong></div>
+                <div class="col-5 text-muted">Department</div><div class="col-7">{{ txn.department }}</div>
+                <div class="col-5 text-muted">Purpose</div><div class="col-7">{{ txn.purpose }}</div>
+                <div class="col-5 text-muted">Released By</div><div class="col-7">{{ txn.released_by }}</div>
+                <div class="col-5 text-muted">Date Borrowed</div><div class="col-7">{{ txn.date_borrowed|date:"M d, Y H:i" }}</div>
+                <div class="col-5 text-muted">Expected Return</div>
+                <div class="col-7">
+                    {% if txn.expected_return %}
+                        {{ txn.expected_return|date:"M d, Y H:i" }}
+                        {% if txn.is_overdue %}<span class="badge badge-overdue ms-1">Overdue</span>{% endif %}
+                    {% else %}—{% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if txn.status == 'returned' %}
+        <div class="form-card mb-3" style="border-color:#d1fae5;">
+            <h6 class="text-muted mb-3" style="font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;">Return Info</h6>
+            <div class="row g-2" style="font-size:.88rem;">
+                <div class="col-5 text-muted">Date Returned</div><div class="col-7">{{ txn.date_returned|date:"M d, Y H:i" }}</div>
+                <div class="col-5 text-muted">Returned By</div><div class="col-7">{{ txn.returned_by }}</div>
+                <div class="col-5 text-muted">Received By</div><div class="col-7">{{ txn.received_by }}</div>
+                {% if txn.return_notes %}
+                <div class="col-5 text-muted">Notes</div><div class="col-7">{{ txn.return_notes }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="d-flex gap-2">
+            {% if txn.status == 'ongoing' %}
+            <a href="{% url 'borrow_return' txn.pk %}" class="btn btn-success"><i class="bi bi-check-circle me-2"></i>Process Return</a>
+            {% endif %}
+            <a href="{% url 'transaction_list' %}" class="btn btn-outline-secondary">← Back to History</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
