@@ -3,26 +3,56 @@
 {% block page_title %}History / Logs{% endblock %}
 
 {% block content %}
-<div class="table-card">
-    <div class="tc-head">
-        <span><i class="bi bi-clock-history me-2"></i>All Transactions</span>
+<div class="table-card shadow-sm border-0">
+    <div class="tc-head d-flex justify-content-between align-items-center p-2 bg-light border-bottom">
+        <div class="d-flex align-items-center ms-2">
+            <span class="fw-bold text-dark" style="font-size: 0.9rem;">
+                <i class="bi bi-clock-history me-1 text-primary"></i> All Transactions
+            </span>
+        </div>
+        
+        <form method="get" class="d-flex" style="width: 250px;">
+            <div class="input-group input-group-sm">
+                {{ form.search }}
+                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
     </div>
 
-    <div class="p-3 border-bottom">
+    <div class="px-3 py-2 border-bottom bg-white">
         <form method="get">
-            <div class="row g-2">
-                <div class="col-md-3">{{ form.search }}</div>
-                <div class="col-md-2">{{ form.department }}</div>
-                <div class="col-md-2">{{ form.status }}</div>
-                <div class="col-md-2">{{ form.date_from }}</div>
-                <div class="col-md-2">{{ form.date_to }}</div>
-                <div class="col-md-1 d-flex gap-1">
-                    <button class="btn btn-sm btn-outline-primary w-100">Filter</button>
+            <div class="row g-2 align-items-center">
+                <div class="col-md-2">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-transparent border-0 ps-0 fw-bold text-muted" style="font-size: 0.75rem;">DIV:</span>
+                        {{ form.division }}
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-transparent border-0 ps-0 fw-bold text-muted" style="font-size: 0.75rem;">STATUS:</span>
+                        {{ form.status }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-transparent border-0 fw-bold text-muted" style="font-size: 0.75rem;">FROM:</span>
+                        {{ form.date_from }}
+                        <span class="input-group-text bg-transparent border-0 fw-bold text-muted" style="font-size: 0.75rem;">TO:</span>
+                        {{ form.date_to }}
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">
+                        Filter
+                    </button>
+                    {% if request.GET %}
+                    <a href="{% url 'history_logs' %}" class="btn btn-sm btn-light border px-2 text-muted">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
-            {% if request.GET %}
-            <a href="{% url 'history_logs' %}" class="btn btn-sm btn-link text-muted mt-1">Clear filters</a>
-            {% endif %}
         </form>
     </div>
 
@@ -32,7 +62,7 @@
                 <th>No.</th>
                 <th>Equipment</th>
                 <th>Borrower</th>
-                <th>Department</th>
+                <th>Division</th>
                 <th>Borrowed / Due</th>
                 <th>Returned</th>
                 <th>Status</th>
