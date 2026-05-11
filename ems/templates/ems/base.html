@@ -219,7 +219,7 @@
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
             <div class="sidebar-section">Equipment</div>
-                <a href="{% url 'equipment_list' %}" class="nav-link {% if request.resolver_match.url_name == 'all_equipment' %}active{% endif %}">
+                <a href="{% url 'all_equipment' %}" class="nav-link {% if request.resolver_match.url_name == 'all_equipment' %}active{% endif %}">
                     <i class="bi bi-laptop"></i> All Equipment
                 </a>
                 <a href="{% url 'equipment_add' %}" class="nav-link {% if request.resolver_match.url_name == 'equipment_add' %}active{% endif %}">
@@ -229,7 +229,7 @@
                 <a href="{% url 'borrow_create' %}" class="nav-link {% if request.resolver_match.url_name == 'borrow_create' %}active{% endif %}">
                     <i class="bi bi-box-arrow-right"></i> New Borrow
                 </a>
-                <a href="{% url 'transaction_list' %}" class="nav-link {% if request.resolver_match.url_name == 'history_logs' %}active{% endif %}">
+                <a href="{% url 'history_logs' %}" class="nav-link {% if request.resolver_match.url_name == 'history_logs' %}active{% endif %}">
                     <i class="bi bi-clock-history"></i> History / Logs
                 </a>
         </div>

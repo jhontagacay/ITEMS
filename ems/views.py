@@ -107,7 +107,7 @@ def transaction_detail(request, pk):
     txn = get_object_or_404(BorrowTransaction.objects.select_related('equipment', 'department'), pk=pk)
     return render(request, 'ems/transaction_detail.html', {'txn': txn})
 
-def transaction_list(request):
+def history_logs(request):
     form = TransactionFilterForm(request.GET or None)
     qs   = BorrowTransaction.objects.select_related('equipment', 'department')
     if form.is_valid():
