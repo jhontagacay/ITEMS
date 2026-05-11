@@ -3,24 +3,43 @@
 {% block page_title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="form-card">
-            <form method="post">
-                {% csrf_token %}
+<style>
+
+    .django-field-wrapper input, 
+    .django-field-wrapper select, 
+    .django-field-wrapper textarea {
+        width: 100% !important;
+        display: block;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+    }
+
+</style>
+
+<div class="container-fluid py-3">
+    <div class="form-card p-4">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
                 {% for field in form %}
-                <div class="mb-3">
+                <div class="col-md-6 mb-3">
                     <label class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}<div class="text-danger" style="font-size:.8rem;">{{ field.errors.0 }}</div>{% endif %}
+                    <div class="django-field-wrapper">
+                        {{ field }}
+                    </div>
+                    {% if field.errors %}
+                        <div class="text-danger" style="font-size:.8rem;">{{ field.errors.0 }}</div>
+                    {% endif %}
                 </div>
                 {% endfor %}
-                <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn" style="background:#1a4db3;color:#fff;">Save Equipment</button>
-                    <a href="{% url 'all_equipment' %}" class="btn btn-outline-secondary">Cancel</a>
-                </div>
-            </form>
-        </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn px-4" style="background:#1a4db3;color:#fff;">Save Equipment</button>
+                <a href="{% url 'all_equipment' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

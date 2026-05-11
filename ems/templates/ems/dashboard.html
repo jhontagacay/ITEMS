@@ -11,44 +11,6 @@
 </div>
 {% endif %}
 
-<div class="row g-4">
-    <div class="col-md-3">
-        <div class="stat-card card-total" style="background-color: #7b9aff;">
-            <div>
-                <div class="stat-label">Total Equipment</div>
-                <div class="stat-value">{{ total_equipment|default:"0" }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="stat-card card-available" style="background-color: #29ed63;">
-            <div>
-                <div class="stat-label">Available</div>
-                <div class="stat-value">{{ available|default:"0" }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="stat-card card-borrowed" style="background-color: #ff8324;">
-            <div>
-                <div class="stat-label">Currently Borrowed</div>
-                <div class="stat-value">{{ borrowed|default:"0" }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="stat-card card-overdue" style="background-color: #ec2727;">
-            <div>
-                <div class="stat-label">Unavailable</div>
-                <div class="stat-value">{{ unavailable_count|default:"0" }}</div>
-            </div>
-        </div>
-    </div>
-</div>
-
 {% if overdue %}
 <div class="alert alert-danger d-flex align-items-start gap-2 mb-4" style="border-radius:10px;">
     <i class="bi bi-exclamation-circle-fill mt-1"></i>
@@ -59,6 +21,54 @@
 </div>
 {% endif %}
 
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-total" style="background: #3d7be6; color: #8faeec;">
+            <div class="stat-icon" style="background: #092c68; color: #ffffff;">
+                <i class="bi bi-laptop"></i>
+            </div>
+                <div class="stat-label">Total Equipment</div>
+                <div class="stat-value">{{ total_equipment|default:"0" }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-available" style="background: #0dae33; color: #99d2a6;">
+            <div class="stat-icon" style="background: #155724; color: #ffffff;">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div>
+                <div class="stat-label">Available</div>
+                <div class="stat-value">{{ available|default:"0" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-borrowed" style="background: #f98328; color: #fff;">
+            <div class="stat-icon" style="background: #793f09; color: #ffffff;">
+                <i class="bi bi-box-arrow-right"></i>
+            </div>
+            <div>
+                <div class="stat-label">Currently Borrowed</div>
+                <div class="stat-value">{{ borrowed|default:"0" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-overdue" style="background: #f52f2f; color: #fff;">
+            <div class="stat-icon" style="background: #90101c; color: #ffffff;">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div>
+                <div class="stat-label">Unavailable</div>
+                <div class="stat-value">{{ unavailable_count|default:"0" }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-3 mt-2">
     <div class="col-lg-8">
         <div class="table-card">
@@ -68,17 +78,21 @@
             {% if ongoing_txns %}
 
             <table class="table table-hover mb-0">
-                <thead><tr>
-                    <th>Equipment</th>
-                    <th>Borrower</th>
-                    <th>Department</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr></thead>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Equipment</th>
+                        <th>Borrower</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
                 <tbody>
                     {% for t in ongoing_txns %}
                     <tr>
+                        <td>{{ forloop.counter }}</td>
                         <td>
                             <strong>{{ t.equipment.name }}</strong><br>
                             <small class="text-muted">{{ t.equipment.serial_number }}</small>
@@ -114,7 +128,7 @@
     <div class="col-lg-4">
         <div class="table-card h-100">
             <div class="tc-head">
-                <span><i class="bi bi-building me-2 text-primary"></i>By Department</span>
+                <span><i class="bi bi-building me-2 text-primary"></i>Department</span>
             </div>
             {% if dept_stats %}
 
@@ -147,33 +161,39 @@
         </div>
 
         <table class="table table-hover mb-0">
-            <thead><tr>
-                <th>Equipment</th>
-                <th>Borrower</th>
-                <th>Department</th>
-                <th>Borrowed</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr></thead>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Equipment</th>
+                    <th>Borrower</th>
+                    <th>Department</th>
+                    <th>Date & Time Borrowed</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
 
             <tbody>
                 {% for t in recent_txns %}
-                <tr>
-                    <td><a href="{% url 'transaction_detail' t.pk %}" class="text-decoration-none fw-500">{{ t.equipment.name }}</a></td>
-                    <td>{{ t.borrower_name }}</td>
-                    <td>{{ t.department.name }}</td>
-                    <td style="font-size:.82rem;color:#6c757d;">{{ t.date_borrowed|date:"M d, Y" }}</td>
+                <tr class="align-middle">
+                    <td>{{ forloop.counter }}</td>
+                    <td class="fw-medium text-dark">{{ t.equipment.name }}</td>
+                    <td class="text-muted">{{ t.borrower_name }}</td>
+                    <td>
+                        <span class="badge rounded-pill bg-light text-dark border fw-bold px-3" style="font-size: 0.75rem;">
+                            {{ t.department }}
+                        </span>
+                    </td>
+                    <td class="text-muted" style="font-size: 0.82rem;">{{ t.date_borrowed|date:"M d, Y" }}</td>
                     <td>
                         {% if t.status == 'ongoing' %}
-                            <span class="badge bg-warning text-dark rounded-pill">Borrowed</span>
+                            <span class="badge bg-warning text-dark rounded-pill fw-bold">Borrowed</span>
                         {% elif t.status == 'returned' %}
-                            <span class="badge bg-success rounded-pill">Returned</span>
-                        {% else %}
-                            <span class="badge bg-danger rounded-pill">{{ t.get_status_display }}</span>
+                            <span class="badge bg-success rounded-pill fw-bold">Returned</span>
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{% url 'transaction_detail' t.pk %}" class="btn btn-sm btn-outline-secondary" style="font-size:.76rem;">View</a>
+                        <a href="{% url 'transaction_detail' t.pk %}" class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 0.7rem;">View</a>
                     </td>
                 </tr>
                 {% endfor %}

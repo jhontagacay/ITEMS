@@ -33,73 +33,73 @@
                 <th>Equipment</th>
                 <th>Borrower</th>
                 <th>Department</th>
-                <th>Borrowed</th>
+                <th>Borrowed / Due</th>
                 <th>Returned</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th class="text-end">Actions</th>
             </tr>
         </thead>
 
         <tbody>
             {% for t in transactions %}
             <tr>
-                <td class="text-muted" style="font-size:.78rem;">{{ forloop.counter }}</td>
+                <td class="text-muted" style="font-size:.78rem;">{{ t.pk }}</td>
                 <td>
                     <strong>{{ t.equipment.name }}</strong><br>
                     <small class="text-muted">{{ t.equipment.serial_number }}</small>
                 </td>
                 <td>{{ t.borrower_name }}</td>
-                <td>{{ t.department.name }}</td>
-                
+                <td>{{ t.department }}</td>
+
                 <td style="font-size:.82rem;">
-                    {{ t.date_borrowed|date:"M d, Y" }}<br>
-                    <span class="text-muted">{{ t.date_borrowed|date:"h:i A" }}</span>
+                    <span title="Date Borrowed">{{ t.date_borrowed|date:"M d, Y" }}</span><br>
+                    <small class="text-danger fw-bold" title="Expected Return Date">
+                        <i class="bi bi-calendar-event"></i> Due: {{ t.due_date|date:"M d, Y" }}
+                    </small>
                 </td>
                 
                 <td style="font-size:.82rem;">
                     {% if t.date_returned %}
                         {{ t.date_returned|date:"M d, Y" }}<br>
-                        <span class="text-muted">{{ t.date_returned|date:"h:i A" }}</span>
+                        <span class="text-muted">{{ t.date_returned|date:"H:i" }}</span>
                     {% else %}
-                        <span class="text-muted">—</span>
+                        <span class="text-muted" style="font-style: italic;">Not yet returned</span>
                     {% endif %}
                 </td>
-
-                <td style="font-size:.82rem;">
-                    {{ t.date_borrowed|date:"M d, Y" }}<br>
-                    <span class="text-muted">{{ t.date_borrowed|date:"h:i A" }}</span>
-                </td>
-
                 <td>
-                    {% if t.status == 'ongoing' %}
-                        <span class="badge bg-warning text-dark rounded-pill">Borrowed</span>
-                    {% elif t.status == 'returned' %}
-                        <span class="badge bg-success rounded-pill">Returned</span>
-                    {% else %}
-                        <span class="badge bg-secondary rounded-pill">{{ t.get_status_display }}</span>
+                    <span class="badge 
+                        {% if t.status|lower == 'ongoing' %}bg-warning text-dark
+                        {% elif t.status|lower == 'returned' %}bg-success
+                        {% else %}bg-secondary{% endif %} rounded-pill">
+                        {{ t.get_status_display }}
+                    </span>
+
+                    {% if t.is_overdue %}
+                        <br><span class="badge bg-danger rounded-pill mt-1" style="font-size:.7rem;">LATE / OVERDUE</span>
                     {% endif %}
                 </td>
+                <td class="text-end">
+                    <div class="btn-group">
+                        <a href="{% url 'transaction_detail' t.pk %}" class="btn btn-sm btn-outline-secondary" title="View">
+                            <i class="bi bi-eye"></i>
+                        </a>
+        
+                        {% if t.status|lower == 'ongoing' %}
+                        <a href="{% url 'borrow_return' t.pk %}" class="btn btn-sm btn-outline-success" title="Return">
+                            <i class="bi bi-arrow-left-square"></i>
+                        </a>
+                        {% endif %}
 
-                <td>
-                <div class="d-flex gap-1">
-                    <a href="{% url 'transaction_detail' t.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
-                    
-                    {% if t.status == 'ongoing' %}
-                    <a href="{% url 'borrow_return' t.pk %}" class="btn btn-sm btn-outline-success">Return</a>
-                    {% endif %}
+                        <a href="{% url 'transaction_edit' t.pk %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
 
-                    <a href="{% url 'transaction_edit' t.pk %}" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-
-                    <form action="{% url 'transaction_delete' t.pk %}" method="POST" onsubmit="return confirm('Delete permanently?');" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </form>
-                </div>
-            </td>
+                        <a href="{% url 'transaction_delete' t.pk %}" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Are you sure you want to delete this log?');" title="Delete">
+                             <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </td>
             </tr>
             {% empty %}
             <tr><td colspan="8" class="text-center text-muted py-5">No transactions found.</td></tr>

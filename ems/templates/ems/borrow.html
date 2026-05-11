@@ -1,59 +1,118 @@
 {% extends 'ems/base.html' %}
 {% block title %}New Borrow Transaction{% endblock %}
-{% block page_title %}New Borrow Transaction{% endblock %}
+{% block page_title %}Borrow Transaction{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="form-card">
-            <form method="post">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 mb-0">New Borrow Transaction</h2>
+                <div class="d-flex gap-2"> 
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#equipmentModal">
+                        <i class="bi bi-plus-circle me-1"></i> Add Equipment
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#divisionModal">
+                        <i class="bi bi-building-add me-1"></i> Add Division
+                    </button>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small uppercase">Equipment <span class="text-danger">*</span></label>
+                            {{ form.equipment }}
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Borrower Name <span class="text-danger">*</span></label>
+                                {{ form.borrower_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Division <span class="text-danger">*</span></label>
+                                {{ form.division }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small">Purpose <span class="text-danger">*</span></label>
+                            {{ form.purpose }}
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Date & Time Borrowed</label>
+                                {{ form.date_borrowed }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-muted small">Return Date</label>
+                                {{ form.due_date_day }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-muted small">Return Time</label>
+                                {{ form.due_date_time }}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small">Released By <span class="text-danger">*</span></label>
+                            {{ form.released_by }}
+                        </div>
+
+                        <div class="d-flex gap-2 justify-content-end align-items-center">
+                            <a href="{% url 'dashboard' %}" class="btn btn-light px-4 border">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-4 shadow-sm" style="background-color: #1a4db3; border: none">
+                                <i class="bi bi-check-lg me-1"></i>Record Borrow</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="equipmentModal" tabindex="-1" aria-labelledby="equipmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{% url 'equipment_add' %}" method="post">
                 {% csrf_token %}
-
-                <div class="mb-3">
-                    <label class="form-label">Equipment <span class="text-danger">*</span></label>
-                    {{ form.equipment }}
-                    {% if form.equipment.errors %}<div class="text-danger" style="font-size:.8rem;">{{ form.equipment.errors.0 }}</div>{% endif %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="equipmentModalLabel">Add New Equipment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Borrower Name <span class="text-danger">*</span></label>
-                        {{ form.borrower_name }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Department <span class="text-danger">*</span></label>
-                        {{ form.department }}
-                    </div>
+                <div class="modal-body">
+                    {{ equipment_form.as_p }}
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Purpose <span class="text-danger">*</span></label>
-                    {{ form.purpose }}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Equipment</button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Date & Time Borrowed</label>
-                        {{ form.date_borrowed }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Expected Return</label>
-                        {{ form.expected_return }}
-                    </div>
+<div class="modal fade" id="divisionModal" tabindex="-1" aria-labelledby="divisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{% url 'division_add' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="divisionModalLabel">Add New Division</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Released By <span class="text-danger">*</span></label>
-                    {{ form.released_by }}
+                <div class="modal-body">
+                    {{ division_form.as_p }}
                 </div>
-
-                {% if form.non_field_errors %}
-                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-                {% endif %}
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn" style="background:#1a4db3;color:#fff;"><i class="bi bi-box-arrow-right me-2"></i>Record Borrow</button>
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Division</button>
                 </div>
             </form>
         </div>
