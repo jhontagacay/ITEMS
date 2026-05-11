@@ -147,7 +147,7 @@ def transaction_edit(request, pk):
             transaction.date_borrowed = new_date
             
         transaction.save()
-        return redirect('transaction_list')
+        return redirect('history_logs')
     
     context = {
         'transaction': transaction,
