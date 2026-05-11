@@ -59,7 +59,7 @@ def equipment_add(request):
     if form.is_valid():
         form.save()
         messages.success(request, 'Equipment added successfully.')
-        return redirect('equipment_list')
+        return redirect('all_equipment')
     return render(request, 'ems/equipment_form.html', {'form': form, 'title': 'Add Equipment'})
 
 def equipment_edit(request, pk):
@@ -68,7 +68,7 @@ def equipment_edit(request, pk):
     if form.is_valid():
         form.save()
         messages.success(request, 'Equipment updated.')
-        return redirect('equipment_list')
+        return redirect('all_equipment')
     return render(request, 'ems/equipment_form.html', {'form': form, 'title': 'Edit Equipment'})
 
 def equipment_delete(request, pk):
@@ -76,7 +76,7 @@ def equipment_delete(request, pk):
     if request.method == 'POST':
         eq.delete()
         messages.success(request, 'Equipment deleted.')
-        return redirect('equipment_list')
+        return redirect('all_equipment')
     return render(request, 'ems/confirm_delete.html', {'obj': eq, 'type': 'Equipment'})
 
 def borrow_create(request):
@@ -100,7 +100,7 @@ def borrow_return(request, pk):
             notes=form.cleaned_data['return_notes'],
         )
         messages.success(request, f'"{txn.equipment.name}" has been returned and marked available.')
-        return redirect('transaction_list')
+        return redirect('history_logs')
     return render(request, 'ems/return.html', {'form': form, 'txn': txn})
 
 def transaction_detail(request, pk):

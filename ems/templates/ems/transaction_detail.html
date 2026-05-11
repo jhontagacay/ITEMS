@@ -59,7 +59,7 @@
             {% if txn.status == 'ongoing' %}
             <a href="{% url 'borrow_return' txn.pk %}" class="btn btn-success"><i class="bi bi-check-circle me-2"></i>Process Return</a>
             {% endif %}
-            <a href="{% url 'transaction_list' %}" class="btn btn-outline-secondary">← Back to History</a>
+            <a href="{% url 'history_logs' %}" class="btn btn-outline-secondary">← Back to History</a>
         </div>
     </div>
 </div>

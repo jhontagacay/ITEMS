@@ -72,6 +72,7 @@
                     <th>Equipment</th>
                     <th>Borrower</th>
                     <th>Department</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr></thead>
 
@@ -83,10 +84,10 @@
                             <small class="text-muted">{{ t.equipment.serial_number }}</small>
                         </td>
                         <td>{{ t.borrower_name }}</td>
-                        <td>{{ t.department }}</td>
+                        <td>{{ t.department.name }}</td>
                         <td>
                             {% if t.is_overdue %}
-                            <span class="badge badge-overdue rounded-pill">Overdue</span>
+                            <span class="badge badge-overdue rounded-pill" style="background-color: #dc3545; color: #fff;">Overdue</span>
                             {% elif t.expected_return %}
                             
                             {% else %}
@@ -142,14 +143,14 @@
     <div class="table-card mt-3">
         <div class="tc-head">
             <span><i class="bi bi-clock-history me-2 text-secondary"></i>Recent Transactions</span>
-            <a href="{% url 'transaction_list' %}" style="font-size:.82rem;" class="text-primary">View all</a>
+            <a href="{% url 'history_logs' %}" style="font-size:.82rem;" class="text-primary">View all</a>
         </div>
 
         <table class="table table-hover mb-0">
             <thead><tr>
                 <th>Equipment</th>
                 <th>Borrower</th>
-                <th>Dept</th>
+                <th>Department</th>
                 <th>Borrowed</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -160,7 +161,7 @@
                 <tr>
                     <td><a href="{% url 'transaction_detail' t.pk %}" class="text-decoration-none fw-500">{{ t.equipment.name }}</a></td>
                     <td>{{ t.borrower_name }}</td>
-                    <td>{{ t.department }}</td>
+                    <td>{{ t.department.name }}</td>
                     <td style="font-size:.82rem;color:#6c757d;">{{ t.date_borrowed|date:"M d, Y" }}</td>
                     <td>
                         {% if t.status == 'ongoing' %}

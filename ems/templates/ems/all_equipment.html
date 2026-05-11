@@ -28,6 +28,7 @@
     <table class="table table-hover mb-0">
         <thead>
             <tr>
+                <th>No.</th>
                 <th>Name</th>
                 <th>Serial Number</th>
                 <th>Status</th>
@@ -37,6 +38,7 @@
         <tbody>
         {% for eq in equipments %}
         <tr>
+            <td>{{ forloop.counter }}</td>
             <td><strong>{{ eq.name }}</strong></td>
             <td><code style="font-size:.82rem;">{{ eq.serial_number }}</code></td>
             <td>

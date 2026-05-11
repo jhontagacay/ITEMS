@@ -40,10 +40,9 @@ class BorrowTransaction(models.Model):
         ('ongoing',   'Ongoing'),
         ('returned',  'Returned'),
     ]
-
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name='transactions')
     borrower_name = models.CharField(max_length=150)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
     purpose = models.TextField()
     released_by = models.CharField(max_length=150)
     date_borrowed = models.DateTimeField(default=timezone.now)
