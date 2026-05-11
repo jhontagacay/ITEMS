@@ -1,0 +1,41 @@
+{% extends 'ems/base.html' %}
+{% block content %}
+<div class="form-card" style="max-width: 600px; margin: 2rem auto;">
+    <h5 class="mb-4">Edit Transaction</h5>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Equipment</label>
+            <select name="equipment" class="form-select">
+                {% for eq in equipments %}
+                <option value="{{ eq.id }}" {% if eq == transaction.equipment %}selected{% endif %}>
+                    {{ eq.name }} ({{ eq.serial_number }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Borrower Name</label>
+            <input type="text" name="borrower_name" class="form-control" value="{{ transaction.borrower_name }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Department</label>
+            <select name="department" class="form-select">
+                {% for dept in departments %}
+                <option value="{{ dept.id }}" {% if dept == transaction.department %}selected{% endif %}>
+                    {{ dept.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Date Borrowed</label>
+            <input type="datetime-local" name="date_borrowed" class="form-control" value="{{ transaction.date_borrowed|date:'Y-m-d\TH:i' }}">
+        </div>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Update Transaction</button>
+            <a href="{% url 'history_logs' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

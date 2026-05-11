@@ -11,7 +11,6 @@
         </a>
     </div>
 
-  <!-- Filters -->
     <div class="p-3 border-bottom d-flex gap-2 flex-wrap">
         <form method="get" class="d-flex gap-2 flex-wrap w-100">
         <input name="q" value="{{ q }}" class="form-control form-control-sm" style="max-width:220px;" placeholder="Search name / serial...">
@@ -27,29 +26,41 @@
     </div>
 
     <table class="table table-hover mb-0">
-        <thead><tr>
-        <th>Name</th>
-        <th>Serial Number</th>
-        <th>Category</th>
-        <th>Status</th>
-        <th>Actions</th>
-        </tr></thead>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Serial Number</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
         <tbody>
         {% for eq in equipments %}
         <tr>
-        <td><strong>{{ eq.name }}</strong></td>
-        <td><code style="font-size:.82rem;">{{ eq.serial_number }}</code></td>
-        <td>{{ eq.category|default:"—" }}</td>
-        <td>
-            <span class="badge badge-{{ eq.status }} rounded-pill px-3">{{ eq.get_status_display }}</span>
-        </td>
-        <td>
-            {% if eq.status == 'available' %}
-            <a href="{% url 'borrow_create' %}?equipment={{ eq.pk }}" class="btn btn-sm btn-outline-warning" style="font-size:.76rem;">Borrow</a>
-            {% endif %}
-            <a href="{% url 'equipment_edit' eq.pk %}" class="btn btn-sm btn-outline-secondary ms-1" style="font-size:.76rem;">Edit</a>
-            <a href="{% url 'equipment_delete' eq.pk %}" class="btn btn-sm btn-outline-danger ms-1" style="font-size:.76rem;">Delete</a>
-        </td>
+            <td><strong>{{ eq.name }}</strong></td>
+            <td><code style="font-size:.82rem;">{{ eq.serial_number }}</code></td>
+            <td>
+                {% if eq.status == 'borrowed' %}
+                    <span class="badge rounded-pill px-3" style="background-color: #ffc107; color: #212529; font-weight: bold; font-size: 0.85rem;">
+                        Borrowed
+                    </span>
+                {% elif eq.status == 'available' %}
+                    <span class="badge rounded-pill px-3" style="background-color: #198754; color: #ffffff; font-weight: bold; font-size: 0.85rem;">
+                        Available
+                    </span>
+                {% else %}
+                    <span class="badge rounded-pill px-3" style="background-color: #6c757d; color: #ffffff; font-weight: bold; font-size: 0.85rem;">
+                        {{ eq.get_status_display }}
+                    </span>
+                {% endif %}
+            </td>
+            <td>
+                {% if eq.status == 'available' %}
+                <a href="{% url 'borrow_create' %}?equipment={{ eq.pk }}" class="btn btn-sm btn-outline-warning" style="font-size:.76rem;">Borrow</a>
+                {% endif %}
+                <a href="{% url 'equipment_edit' eq.pk %}" class="btn btn-sm btn-outline-secondary ms-1" style="font-size:.76rem;">Edit</a>
+                <a href="{% url 'equipment_delete' eq.pk %}" class="btn btn-sm btn-outline-danger ms-1" style="font-size:.76rem;">Delete</a>
+            </td>
         </tr>
         {% empty %}
         <tr><td colspan="5" class="text-center text-muted py-4">No equipment found.</td></tr>

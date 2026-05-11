@@ -16,8 +16,7 @@
         <div class="stat-card card-total" style="background-color: #7b9aff;">
             <div>
                 <div class="stat-label">Total Equipment</div>
-                <div class="stat-value">{{ equipment_count|default:"0" }}</div>
-                <div class="stat-subtext">All registered units</div>
+                <div class="stat-value">{{ total_equipment|default:"0" }}</div>
             </div>
         </div>
     </div>
@@ -26,8 +25,7 @@
         <div class="stat-card card-available" style="background-color: #29ed63;">
             <div>
                 <div class="stat-label">Available</div>
-                <div class="stat-value">{{ available_count|default:"0" }}</div>
-                <div class="stat-subtext">Ready to borrow</div>
+                <div class="stat-value">{{ available|default:"0" }}</div>
             </div>
         </div>
     </div>
@@ -36,8 +34,7 @@
         <div class="stat-card card-borrowed" style="background-color: #ff8324;">
             <div>
                 <div class="stat-label">Currently Borrowed</div>
-                <div class="stat-value">{{ borrowed_count|default:"0" }}</div>
-                <div class="stat-subtext">Out on loan</div>
+                <div class="stat-value">{{ borrowed|default:"0" }}</div>
             </div>
         </div>
     </div>
@@ -47,7 +44,6 @@
             <div>
                 <div class="stat-label">Unavailable</div>
                 <div class="stat-value">{{ unavailable_count|default:"0" }}</div>
-                <div class="stat-subtext">Under maintenance</div>
             </div>
         </div>
     </div>
@@ -76,7 +72,6 @@
                     <th>Equipment</th>
                     <th>Borrower</th>
                     <th>Department</th>
-                    <th>Return By</th>
                     <th>Action</th>
                 </tr></thead>
 
@@ -93,7 +88,7 @@
                             {% if t.is_overdue %}
                             <span class="badge badge-overdue rounded-pill">Overdue</span>
                             {% elif t.expected_return %}
-                            {{ t.expected_return|date:"M d, Y H:i" }}
+                            
                             {% else %}
                             <span class="text-muted">—</span>
                             {% endif %}
@@ -157,6 +152,7 @@
                 <th>Dept</th>
                 <th>Borrowed</th>
                 <th>Status</th>
+                <th>Action</th>
             </tr></thead>
 
             <tbody>
@@ -174,6 +170,9 @@
                         {% else %}
                             <span class="badge bg-danger rounded-pill">{{ t.get_status_display }}</span>
                         {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'transaction_detail' t.pk %}" class="btn btn-sm btn-outline-secondary" style="font-size:.76rem;">View</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -12,4 +12,6 @@ urlpatterns = [
     path('borrow/<int:pk>/return/',views.borrow_return, name='borrow_return'),
     path('transactions/',views.transaction_list, name='transaction_list'),
     path('transactions/<int:pk>/',views.transaction_detail, name='transaction_detail'),
+    path('transaction/edit/<int:pk>/', views.transaction_edit, name='transaction_edit'),
+    path('transaction/delete/<int:pk>/', views.transaction_delete, name='transaction_delete'),
 ]

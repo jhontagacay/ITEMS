@@ -11,7 +11,7 @@ def itmonitoringsystem(request):
 
 def dashboard(request):
     equipments = Equipment.objects.all()
-    total = equipments.count()
+    total_equipment = equipments.count()
     available = equipments.filter(status='available').count()
     borrowed = equipments.filter(status='borrowed').count()
     unavailable = equipments.filter(status='unavailable').count()
@@ -23,9 +23,9 @@ def dashboard(request):
 
     overdue = [t for t in ongoing_txns if t.is_overdue]
 
-    recent_txns  = (BorrowTransaction.objects
+    recent_txns = (BorrowTransaction.objects
         .select_related('equipment', 'department')
-        .order_by('-created_at')[:8])
+        .order_by('-date_borrowed')[:8])
 
     dept_stats = (BorrowTransaction.objects
         .filter(status='ongoing')
@@ -34,15 +34,16 @@ def dashboard(request):
         .order_by('-count'))
 
     return render(request, 'ems/dashboard.html', {
-        'total': total, 'available': available,
-        'borrowed': borrowed, 'unavailable': unavailable,
+        'total_equipment': total_equipment, 
+        'available': available,
+        'borrowed': borrowed, 
+        'unavailable': unavailable,
         'ongoing_txns': ongoing_txns,
         'recent_txns': recent_txns,
         'overdue': overdue,
         'dept_stats': dept_stats,
     })
 
-#Equipment CRUD
 def equipment_list(request):
     qs = Equipment.objects.all()
     q  = request.GET.get('q', '')
@@ -51,7 +52,7 @@ def equipment_list(request):
         qs = qs.filter(Q(name__icontains=q) | Q(serial_number__icontains=q) | Q(category__icontains=q))
     if status_f:
         qs = qs.filter(status=status_f)
-    return render(request, 'ems/equipment_list.html', {'equipments': qs, 'q': q, 'status_f': status_f})
+    return render(request, 'ems/all_equipment.html', {'equipments': qs, 'q': q, 'status_f': status_f})
 
 def equipment_add(request):
     form = EquipmentForm(request.POST or None)
@@ -78,7 +79,6 @@ def equipment_delete(request, pk):
         return redirect('equipment_list')
     return render(request, 'ems/confirm_delete.html', {'obj': eq, 'type': 'Equipment'})
 
-#Borrow
 def borrow_create(request):
     form = BorrowForm(request.POST or None)
     if form.is_valid():
@@ -107,11 +107,9 @@ def transaction_detail(request, pk):
     txn = get_object_or_404(BorrowTransaction.objects.select_related('equipment', 'department'), pk=pk)
     return render(request, 'ems/transaction_detail.html', {'txn': txn})
 
-#History / Logs
 def transaction_list(request):
     form = TransactionFilterForm(request.GET or None)
     qs   = BorrowTransaction.objects.select_related('equipment', 'department')
-
     if form.is_valid():
         d = form.cleaned_data
         if d.get('search'):
@@ -130,4 +128,38 @@ def transaction_list(request):
     else:
         qs = qs.order_by('-date_borrowed')
 
-    return render(request, 'ems/transaction_list.html', {'form': form, 'transactions': qs})
+    return render(request, 'ems/history_logs.html', {'form': form, 'transactions': qs})
+
+def transaction_edit(request, pk):
+    transaction = get_object_or_404(BorrowTransaction, pk=pk)
+    if request.method == 'POST':
+        transaction.borrower_name = request.POST.get('borrower_name')
+        equipment_id = request.POST.get('equipment')
+        if equipment_id:
+            transaction.equipment = get_object_or_404(Equipment, id=equipment_id)
+            
+        dept_id = request.POST.get('department')
+        if dept_id:
+            transaction.department = get_object_or_404(Department, id=dept_id)
+    
+        new_date = request.POST.get('date_borrowed')
+        if new_date:
+            transaction.date_borrowed = new_date
+            
+        transaction.save()
+        return redirect('transaction_list')
+    
+    context = {
+        'transaction': transaction,
+        'equipments': Equipment.objects.all(),
+        'departments': Department.objects.all(),
+    }
+    return render(request, 'ems/transaction_form.html', context)
+    
+def transaction_delete(request, pk):
+    if request.method == 'POST':
+        transaction = get_object_or_404(BorrowTransaction, pk=pk)
+        transaction.equipment.status = 'available'
+        transaction.equipment.save()
+        transaction.delete()
+    return redirect('dashboard')

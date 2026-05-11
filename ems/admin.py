@@ -8,13 +8,11 @@ class DepartmentAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
 
-
 @admin.register(Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
     list_display  = ['name', 'serial_number', 'category', 'status', 'added_at']
     list_filter   = ['status', 'category']
     search_fields = ['name', 'serial_number']
-
 
 @admin.register(BorrowTransaction)
 class BorrowTransactionAdmin(admin.ModelAdmin):
