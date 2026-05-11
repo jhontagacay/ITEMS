@@ -44,7 +44,7 @@ def dashboard(request):
         'dept_stats': dept_stats,
     })
 
-def equipment_list(request):
+def all_equipment(request):
     qs = Equipment.objects.all()
     q  = request.GET.get('q', '')
     status_f = request.GET.get('status', '')

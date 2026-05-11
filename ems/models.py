@@ -49,8 +49,6 @@ class BorrowTransaction(models.Model):
     date_borrowed = models.DateTimeField(default=timezone.now)
     expected_return = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ongoing')
-
-    # Return fields
     date_returned = models.DateTimeField(null=True, blank=True)
     returned_by = models.CharField(max_length=150, blank=True)
     received_by = models.CharField(max_length=150, blank=True)
