@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 class ITMonitoringSystem(models.Model):
     equipment_name = models.CharField(max_length=100)
@@ -43,21 +45,19 @@ class BorrowTransaction(models.Model):
         ('returned',  'Returned'),
     ]
 
+    transaction_number = models.PositiveIntegerField(unique=True, null=True, blank=True)
     equipment      = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name='transactions')
     borrower_name  = models.CharField(max_length=150)
     division       = models.ForeignKey(Division, on_delete=models.SET_NULL, null=True)
     purpose        = models.TextField()
     released_by    = models.CharField(max_length=150)
     date_borrowed  = models.DateTimeField(default=timezone.now)
-
     due_date       = models.DateTimeField(null=True, blank=True) 
     status         = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ongoing')
-
     date_returned  = models.DateTimeField(null=True, blank=True)
     returned_by    = models.CharField(max_length=150, blank=True)
     received_by    = models.CharField(max_length=150, blank=True)
     return_notes   = models.TextField(blank=True)
-
     created_at     = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -81,3 +81,12 @@ class BorrowTransaction(models.Model):
         self.save()
         self.equipment.status = 'available'
         self.equipment.save()
+
+@receiver(pre_save, sender=BorrowTransaction)
+def assign_transaction_number(sender, instance, **kwargs):
+    if instance.transaction_number is None:
+        last_transaction = BorrowTransaction.objects.all().order_by('-transaction_number').first()
+        if last_transaction and last_transaction.transaction_number:
+            instance.transaction_number = last_transaction.transaction_number + 1
+        else:
+            instance.transaction_number = 1

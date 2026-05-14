@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <title>Login - ITEMS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        .login-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #001f3f 0%, #003d5c 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .login-left::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .login-left-content {
+            text-align: center;
+            z-index: 10;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            font-size: 80px;
+        }
+
+        .login-left-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+            margin-top: 1rem;
+        }
+
+        .login-right {
+            flex: 1;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-greeting {
+            background: #001f3f;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #001f3f;
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #001f3f;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 31, 63, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.85rem 2rem;
+            background: #001f3f;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background: #003d5c;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 31, 63, 0.2);
+        }
+
+        .login-footer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: #001f3f;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .login-footer a:hover {
+            color: #003d5c;
+            text-decoration: underline;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+            }
+
+            .login-left {
+                min-height: 300px;
+                padding: 2rem 1rem;
+            }
+
+            .login-logo {
+                width: 120px;
+                height: 120px;
+                font-size: 60px;
+            }
+
+            .login-form-container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-wrapper">
+        <div class="login-left">
+            <div class="login-left-content">
+                <div class="login-logo" style="background: transparent; box-shadow: none; width: 250px; height: auto;">
+                    <img src="{% static 'image/IHOMP-LOGO.png' %}" 
+                        alt="IHOMP Logo" 
+                        style="width: 100%; height: auto; mix-blend-mode: multiply; filter: contrast(110%);">
+                </div>
+                
+                <h2 style="font-size: 1.8rem; font-weight: 700; margin-top: 1rem;">
+                    IT Equipment Monitoring System
+                </h2>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-form-container">
+                <div class="login-greeting">
+                    Welcome to IT_EMS!
+                </div>
+
+                <h1 class="login-title">Login your account</h1>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %}">
+                            <i class="bi bi-{% if message.tags == 'error' %}exclamation-triangle{% else %}check-circle{% endif %} me-2"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        Login
+                    </button>
+                </form>
+
+                <div class="d-flex justify-content-center gap-3" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e9ecef;">
+                    <a href="{% url 'signup_view' %}" class="text-decoration-none">Create Account</a>
+                    <a href="{% url 'password_reset_view' %}" class="text-decoration-none text-muted">Forgot Password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

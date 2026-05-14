@@ -1,0 +1,282 @@
+{% extends 'ems/base.html' %}
+{% load static %}
+
+{% block page_title %}Monthly Record - {{ month_name }} {{ year }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="mb-1 fw-bold text-dark">
+                        <i class="bi bi-calendar3 text-primary me-2"></i>
+                        Monthly Record
+                    </h2>
+                    <p class="text-muted mb-0">{{ month_name }} {{ year }}</p>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <a href="?month={{ prev_month }}&year={{ prev_year }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-chevron-left"></i> Prev
+                    </a>
+                    <a href="?month={{ next_month }}&year={{ next_year }}" class="btn btn-outline-primary btn-sm">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body py-3">
+                    <form method="get" class="row gx-2 gy-2 align-items-end">
+                        <div class="col-auto">
+                            <label for="month_select" class="form-label fw-bold mb-1">Month</label>
+                            <select class="form-select form-select-sm" id="month_select" name="month">
+                                {% for month_num, month_name_option in months %}
+                                <option value="{{ month_num }}" {% if month == month_num %}selected{% endif %}>
+                                    {{ month_name_option }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <label for="year_select" class="form-label fw-bold mb-1">Year</label>
+                            <select class="form-select form-select-sm" id="year_select" name="year">
+                                {% for year_option in years %}
+                                <option value="{{ year_option }}" {% if year == year_option %}selected{% endif %}>
+                                    {{ year_option }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-auto d-flex align-items-center gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; padding: 0;">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <a href="{% url 'monthly_record_export' %}?month={{ month }}&year={{ year }}&search={{ search_query }}" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1" style="height: 36px; padding: 0 0.75rem;">
+                                <i class="bi bi-file-earmark-spreadsheet"></i>
+                                Export
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-primary mb-2">{{ total_transactions }}</div>
+                    <h6 class="text-muted mb-0">Total Transactions</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-success mb-2">{{ return_transactions }}</div>
+                    <h6 class="text-muted mb-0">Items Returned</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-info mb-2">{{ equipment_used }}</div>
+                    <h6 class="text-muted mb-0">Equipment Used</h6>
+                    <small class="text-muted">of {{ total_equipment }} total</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="display-4 fw-bold text-warning mb-2">{{ overdue_count }}</div>
+                    <h6 class="text-muted mb-0">Overdue Items</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-building text-primary me-2"></i>
+                        Division Breakdown
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if division_stats %}
+                        {% for stat in division_stats %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="fw-medium">{{ stat.division__name|default:"General" }}</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="width: 100px; height: 8px;">
+                                    <div class="progress-bar bg-primary" role="progressbar"
+                                         style="width: {% widthratio stat.count total_transactions 100 %}%"></div>
+                                </div>
+                                <span class="badge bg-primary fw-bold">{{ stat.count }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center mb-0">No transactions this month</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-pie-chart text-success me-2"></i>
+                        Transaction Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for stat in status_stats %}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="fw-medium">
+                                {% if stat.status == 'ongoing' %}
+                                    <i class="bi bi-clock text-warning me-1"></i>Ongoing
+                                {% elif stat.status == 'returned' %}
+                                    <i class="bi bi-check-circle text-success me-1"></i>Returned
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="width: 100px; height: 8px;">
+                                <div class="progress-bar {% if stat.status == 'ongoing' %}bg-warning{% else %}bg-success{% endif %}"
+                                     role="progressbar" style="width: {% widthratio stat.count total_transactions 100 %}%"></div>
+                            </div>
+                            <span class="badge {% if stat.status == 'ongoing' %}bg-warning{% else %}bg-success{% endif %} fw-bold">{{ stat.count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-graph-up text-info me-2"></i>
+                        12-Month Trend
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for trend in monthly_trend %}
+                        <div class="col-md-1 mb-3">
+                            <div class="text-center">
+                                <div class="fw-bold small text-muted">{{ trend.month }}</div>
+                                <div class="mt-2">
+                                    <div class="bg-{% if trend.current %}primary{% else %}light{% endif %} rounded p-2">
+                                        <div class="fw-bold {% if trend.current %}text-white{% else %}text-dark{% endif %}">{{ trend.count }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-list-check text-secondary me-2"></i>
+                        {% if search_query or division_filter or status_filter %}
+                            Filtered Transactions ({{ month_name }} {{ year }})
+                        {% else %}
+                            Recent Transactions ({{ month_name }} {{ year }})
+                        {% endif %}
+                    </h5>
+                    <a href="{% url 'history_logs' %}?date_from={{ year }}-{{ month|slugify }}-01&date_to={{ year }}-{{ month|slugify }}-31&search={{ search_query }}&division={{ division_filter }}&status={{ status_filter }}"
+                       class="btn btn-sm btn-outline-primary">
+                        View All <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Equipment</th>
+                                    <th>Borrower</th>
+                                    <th>Division</th>
+                                    <th>Date & Time Borrowed</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                <tr>
+                                    <td class="fw-bold text-muted">{{ forloop.counter }}</td>
+                                    <td>
+                                        <div class="fw-medium">{{ transaction.equipment.name }}</div>
+                                        <small class="text-muted">{{ transaction.equipment.serial_number }}</small>
+                                    </td>
+                                    <td>{{ transaction.borrower_name }}</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">{{ transaction.division.name|default:"General" }}</span>
+                                    </td>
+                                    <td>{{ transaction.date_borrowed|date:"M j, Y g:i A" }}</td>
+                                    <td>
+                                        {% if transaction.status == 'ongoing' %}
+                                            <span class="badge bg-warning">Ongoing</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Returned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'transaction_detail' transaction.pk %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                        <h5 class="text-muted">No transactions found</h5>
+                        <p class="text-muted mb-0">There were no borrowing transactions in {{ month_name }} {{ year }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Highlight current month
+    const currentMonthElements = document.querySelectorAll('.bg-primary');
+    currentMonthElements.forEach(el => {
+        el.style.transform = 'scale(1.05)';
+        el.style.transition = 'transform 0.2s';
+    });
+});
+</script>
+{% endblock %}

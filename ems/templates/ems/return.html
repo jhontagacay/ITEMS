@@ -12,8 +12,8 @@
             <div class="fw-600" style="font-size:1.05rem;">{{ txn.equipment.name }}</div>
             <div class="text-muted" style="font-size:.83rem;">S/N: {{ txn.equipment.serial_number }}</div>
             <div class="mt-2" style="font-size:.85rem;">
-                Borrowed by <strong>{{ txn.borrower_name }}</strong> ({{ txn.department }})
-                on {{ txn.date_borrowed|date:"M d, Y H:i" }}
+                Borrowed by <strong>{{ txn.borrower_name }}</strong> ({{ txn.division }})
+                on {{ txn.date_borrowed|date:"M d, Y g:i A" }}
             </div>
             {% if txn.is_overdue %}
             <span class="badge badge-overdue rounded-pill mt-2">Overdue</span>

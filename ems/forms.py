@@ -1,6 +1,13 @@
 from django import forms
 from django.utils import timezone
-from .models import BorrowTransaction, Equipment, Division
+from .models import BorrowTransaction, Equipment, Division, User
+
+class YourSignupForm(forms.ModelForm):
+    email = forms.EmailField(required=False)
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
 
 class BorrowForm(forms.ModelForm):
     due_date_day = forms.DateField(
@@ -24,6 +31,7 @@ class BorrowForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['equipment'].empty_label = "Select Equipment"
         self.fields['division'].empty_label = "Select Division"
+        self.fields['division'].queryset = Division.objects.all() 
         self.fields['equipment'].queryset = Equipment.objects.filter(status='available')
         self.fields['date_borrowed'].initial = timezone.now().strftime('%Y-%m-%dT%H:%M')
         for field in self.fields.values():

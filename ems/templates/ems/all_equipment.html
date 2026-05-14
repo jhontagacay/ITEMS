@@ -16,13 +16,13 @@
         <form method="get" class="ms-auto d-flex align-items-center gap-2 flex-nowrap" style="min-width:0;">
             <input name="q" value="{{ q }}" class="form-control form-control-sm" style="max-width:220px; min-width:220px;" placeholder="Search name / serial...">
             <select name="status" class="form-select form-select-sm" style="max-width:160px; min-width:160px;">
-                <option value="">All statuses</option>
+                <option value="3" {% if status_f == '' %}selected{% endif %}> </option>
                 <option value="available" {% if status_f == 'available' %}selected{% endif %}>Available</option>
                 <option value="borrowed"  {% if status_f == 'borrowed' %}selected{% endif %}>Borrowed</option>
                 <option value="unavailable" {% if status_f == 'unavailable' %}selected{% endif %}>Not Available</option>
             </select>
             <button class="btn btn-sm btn-outline-secondary">Filter</button>
-            {% if q or status_f %}<a href="{% url 'equipment_list' %}" class="btn btn-sm btn-link text-muted">Clear</a>{% endif %}
+            {% if q or status_f %}<a href="{% url 'all_equipment' %}" class="btn btn-sm btn-link text-muted">Clear</a>{% endif %}
         </form>
     </div>
 
@@ -72,7 +72,6 @@
     </table>
 </div>
 
-<!-- Add Equipment Modal -->
 <div class="modal fade" id="addEquipmentModal" tabindex="-1" aria-labelledby="addEquipmentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

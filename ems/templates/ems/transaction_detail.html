@@ -1,12 +1,12 @@
 {% extends 'ems/base.html' %}
-{% block title %}Transaction #{{ txn.pk }}{% endblock %}
+{% block title %}Transaction #{{ txn.transaction_number|default_if_none:'—' }}{% endblock %}
 {% block page_title %}Transaction Detail{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-7">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h5 class="mb-0">Transaction #{{ txn.pk }}</h5>
+            <h5 class="mb-0">Transaction #{{ txn.transaction_number|default_if_none:'—' }}</h5>
             <span class="badge badge-{{ txn.status }} rounded-pill px-3" style="font-size:.85rem;">{{ txn.get_status_display }}</span>
         </div>
 
@@ -27,14 +27,14 @@
             <h6 class="text-muted mb-3" style="font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;">Borrow Info</h6>
             <div class="row g-2" style="font-size:.88rem;">
                 <div class="col-5 text-muted">Borrower</div><div class="col-7"><strong>{{ txn.borrower_name }}</strong></div>
-                <div class="col-5 text-muted">Department</div><div class="col-7">{{ txn.department }}</div>
+                <div class="col-5 text-muted">Department</div><div class="col-7">{{ txn.division }}</div>
                 <div class="col-5 text-muted">Purpose</div><div class="col-7">{{ txn.purpose }}</div>
                 <div class="col-5 text-muted">Released By</div><div class="col-7">{{ txn.released_by }}</div>
-                <div class="col-5 text-muted">Date Borrowed</div><div class="col-7">{{ txn.date_borrowed|date:"M d, Y H:i" }}</div>
+                <div class="col-5 text-muted">Date Borrowed</div><div class="col-7">{{ txn.date_borrowed|date:"M d, Y g:i A" }}</div>
                 <div class="col-5 text-muted">Expected Return</div>
                 <div class="col-7">
                     {% if txn.expected_return %}
-                        {{ txn.expected_return|date:"M d, Y H:i" }}
+                        {{ txn.expected_return|date:"M d, Y g:i A" }}
                         {% if txn.is_overdue %}<span class="badge badge-overdue ms-1">Overdue</span>{% endif %}
                     {% else %}—{% endif %}
                 </div>
@@ -45,7 +45,7 @@
         <div class="form-card mb-3" style="border-color:#d1fae5;">
             <h6 class="text-muted mb-3" style="font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;">Return Info</h6>
             <div class="row g-2" style="font-size:.88rem;">
-                <div class="col-5 text-muted">Date Returned</div><div class="col-7">{{ txn.date_returned|date:"M d, Y H:i" }}</div>
+                <div class="col-5 text-muted">Date Returned</div><div class="col-7">{{ txn.date_returned|date:"M d, Y g:i A" }}</div>
                 <div class="col-5 text-muted">Returned By</div><div class="col-7">{{ txn.returned_by }}</div>
                 <div class="col-5 text-muted">Received By</div><div class="col-7">{{ txn.received_by }}</div>
                 {% if txn.return_notes %}
