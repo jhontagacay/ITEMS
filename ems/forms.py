@@ -1,6 +1,7 @@
 from django import forms
 from django.utils import timezone
 from .models import BorrowTransaction, Equipment, Division, User
+from django.core.exceptions import ValidationError
 
 class YourSignupForm(forms.ModelForm):
     email = forms.EmailField(required=False)
@@ -45,11 +46,28 @@ class DivisionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({'class': 'form-control', 'placeholder': 'e.g. OMCC'})
+        
+class RegistrationForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    email = forms.EmailField(required=False)
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            raise ValidationError("Passwords do not match. Please re-enter.")
+        
+        return cleaned_data
 
 class ReturnForm(forms.Form):
     returned_by  = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control'}))
     received_by  = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control'}))
     return_notes = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}))
+    
 
 class EquipmentForm(forms.ModelForm):
     class Meta:

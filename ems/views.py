@@ -4,20 +4,54 @@ from .models import ITMonitoringSystem, Equipment, BorrowTransaction, Division
 from django.contrib import messages
 from django.db.models import Q, Count
 from django.utils import timezone
-from .forms import BorrowForm, ReturnForm, EquipmentForm, TransactionFilterForm, DivisionForm, YourSignupForm
+from .forms import BorrowForm, ReturnForm, EquipmentForm, TransactionFilterForm, DivisionForm
 from datetime import datetime 
 import csv
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match. Please try again.')
+            return render(request, 'ems/signup.html')
+
+        if len(password) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            return render(request, 'ems/signup.html')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists.')
+            return render(request, 'ems/signup.html')
+
+        try:
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                email=email
+            )
+            messages.success(request, f'Account created for {username} successfully! Please log in.')
+            return redirect('user_login')
+
+        except Exception as e:
+            messages.error(request, f'Error creating account: {e}')
+            return render(request, 'ems/signup.html')
+
+    return render(request, 'ems/signup.html')
+
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(f"Attempting login for: {username}")
         user = authenticate(request, username=username, password=password)
-        print(f"Authentication result: {user}")
         if user is not None:
             auth_login(request, user)
             messages.success(request, f'Welcome back, {user.username}!')
@@ -26,11 +60,15 @@ def user_login(request):
             messages.error(request, 'Invalid username or password.')
     return render(request, 'ems/login.html')
 
+
 def user_logout(request):
     if request.method in ['GET', 'POST']:
         logout(request)
         messages.info(request, 'You have been logged out.')
     return redirect('user_login')
+
+def password_reset(request):
+    return render(request, 'ems/password_reset.html')
 
 @login_required(login_url='user_login')
 def dashboard(request):
@@ -455,47 +493,3 @@ def monthly_record_export(request):
             txn.received_by,
         ])
     return response
-
-def login(request):
-    return render(request, 'ems/login.html')
-
-def signup(request):
-    if request.method == 'POST':
-        form = YourSignupForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            email = form.cleaned_data.get('email')
-            User.objects.create_user(username=username, password=password, email=email)
-            
-            messages.success(request, 'Account created! Please log in.')
-            return redirect('user_login')
-    else:
-        form = YourSignupForm()
-        
-    return render(request, 'ems/signup.html', {'form': form})
-
-def password_reset(request):
-    return render(request, 'ems/password_reset.html')
-
-def register_view(request):
-    if request.method == "POST":
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match!")
-            return render(request, 'register.html')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already taken.")
-            return render(request, 'register.html')
-
-        user = User.objects.create_user(username=username, email=email, password=password)
-        user.save()
-        
-        messages.success(request, "Account created successfully!")
-        return redirect('login')
-    return render(request, 'signup.html')
