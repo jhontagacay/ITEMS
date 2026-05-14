@@ -104,15 +104,16 @@
         }
 
         .login-greeting {
-            background: #001f3f;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 50px;
-            display: inline-block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
+    background: #001f3f;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    display: block;       
+    width: fit-content;
+    margin: 0 auto 2rem;   
+    font-size: 0.85rem;
+    font-weight: 600;
+}
 
         .login-title {
             font-size: 1.8rem;
@@ -241,13 +242,13 @@
     <div class="login-wrapper">
         <div class="login-left">
             <div class="login-left-content">
-                <div class="login-logo" style="background: transparent; box-shadow: none; width: 250px; height: auto;">
+                <div class="login-logo" style="background: transparent; box-shadow: none; width: 400px; height: auto;">
                     <img src="{% static 'image/IHOMP-LOGO.png' %}" 
                         alt="IHOMP Logo" 
                         style="width: 100%; height: auto; mix-blend-mode: multiply; filter: contrast(110%);">
                 </div>
                 
-                <h2 style="font-size: 1.8rem; font-weight: 700; margin-top: 1rem;">
+                <h2 style="font-size: 30px; font-weight: 700; margin-top: 1rem;">
                     IT Equipment Monitoring System
                 </h2>
             </div>

@@ -467,6 +467,7 @@ def signup(request):
             password = form.cleaned_data.get('password')
             email = form.cleaned_data.get('email')
             User.objects.create_user(username=username, password=password, email=email)
+            
             messages.success(request, 'Account created! Please log in.')
             return redirect('user_login')
     else:
@@ -476,3 +477,25 @@ def signup(request):
 
 def password_reset(request):
     return render(request, 'ems/password_reset.html')
+
+def register_view(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match!")
+            return render(request, 'register.html')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already taken.")
+            return render(request, 'register.html')
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+        
+        messages.success(request, "Account created successfully!")
+        return redirect('login')
+    return render(request, 'signup.html')
