@@ -13,8 +13,13 @@
         
         <form method="get" class="d-flex" style="width: 250px;">
             <div class="input-group input-group-sm">
+<<<<<<< HEAD
                 <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search borrower...">
                 <button class="btn btn-primary" type="submit"><i class="bi bi-search">Search</i></button>
+=======
+                {{ form.search }}
+                <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+>>>>>>> ca33abab01c42ec80093385a04f5c609170818dc
             </div>
         </form>
     </div>
@@ -24,7 +29,11 @@
             <div class="row g-2 align-items-center">
                 <div class="col-md-2">
                     <div class="input-group input-group-sm">
+<<<<<<< HEAD
                         <span class="input-group-text bg-transparent border-0 ps-0 fw-bold text-muted" style="font-size: 0.75rem;">DIVISION:</span>
+=======
+                        <span class="input-group-text bg-transparent border-0 ps-0 fw-bold text-muted" style="font-size: 0.75rem;">DIV:</span>
+>>>>>>> ca33abab01c42ec80093385a04f5c609170818dc
                         {{ form.division }}
                     </div>
                 </div>
@@ -43,10 +52,19 @@
                     </div>
                 </div>
                 <div class="col-md-2 d-flex gap-1">
+<<<<<<< HEAD
                     <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">Filter</button>
                     {% if request.GET %}
                     <a href="{% url 'history_logs' %}" class="btn btn-sm btn-light border px-2 text-muted">
                         <i class="bi bi-x-lg">Clear Filter</i>
+=======
+                    <button type="submit" class="btn btn-sm btn-primary px-3 shadow-sm">
+                        Filter
+                    </button>
+                    {% if request.GET %}
+                    <a href="{% url 'history_logs' %}" class="btn btn-sm btn-light border px-2 text-muted">
+                        <i class="bi bi-x-lg"></i>
+>>>>>>> ca33abab01c42ec80093385a04f5c609170818dc
                     </a>
                     {% endif %}
                 </div>

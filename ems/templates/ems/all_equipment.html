@@ -16,6 +16,10 @@
         <form method="get" class="ms-auto d-flex align-items-center gap-2 flex-nowrap" style="min-width:0;">
             <input name="q" value="{{ q }}" class="form-control form-control-sm" style="max-width:220px; min-width:220px;" placeholder="Search name / serial...">
             <select name="status" class="form-select form-select-sm" style="max-width:160px; min-width:160px;">
+<<<<<<< HEAD
+=======
+                <option value="">All statuses</option>
+>>>>>>> ca33abab01c42ec80093385a04f5c609170818dc
                 <option value="3" {% if status_f == '' %}selected{% endif %}> </option>
                 <option value="available" {% if status_f == 'available' %}selected{% endif %}>Available</option>
                 <option value="borrowed"  {% if status_f == 'borrowed' %}selected{% endif %}>Borrowed</option>
