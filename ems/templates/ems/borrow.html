@@ -3,9 +3,9 @@
 {% block page_title %}Borrow Transaction{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+{% comment %} <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-8"> {% endcomment %}
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="h4 mb-0">New Borrow Transaction</h2>
@@ -35,7 +35,7 @@
                                 {{ form.borrower_name }}
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold text-muted small">Division <span class="text-danger">*</span></label>
+                                <label class="form-label fw-bold text-muted small">Division/Unit/Department/Ward <span class="text-danger">*</span></label>
                                 {{ form.division }}
                             </div>
                         </div>
@@ -48,14 +48,11 @@
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold text-muted small">Date & Time Borrowed</label>
-                                {{ form.date_borrowed }}
+                                {{ form.date_borrowed|date:"F d, Y h:i a" }}
                             </div>
+    
                             <div class="col-md-3">
-                                <label class="form-label fw-bold text-muted small">Return Date</label>
-                                {{ form.due_date_day }}
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold text-muted small">Return Time</label>
+                                <label class="form-label fw-bold text-muted small">Return Date & Time</label>
                                 {{ form.due_date_time }}
                             </div>
                         </div>
@@ -115,7 +112,7 @@
                     <button type="submit" class="btn btn-primary">Save Division</button>
                 </div>
             </form>
-        </div>
+        {% comment %} </div>
     </div>
-</div>
+</div> {% endcomment %}
 {% endblock %}

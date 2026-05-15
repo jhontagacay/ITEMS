@@ -11,32 +11,32 @@ class YourSignupForm(forms.ModelForm):
         fields = ['username', 'email', 'password']
 
 class BorrowForm(forms.ModelForm):
-    due_date_day = forms.DateField(
-        label="Expected Return Date",
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
-    due_date_time = forms.TimeField(
-        label="Expected Return Time",
-        widget=forms.TimeInput(attrs={'type': 'time'})
-    )
     class Meta:
-        model  = BorrowTransaction
-        fields = ['equipment', 'borrower_name', 'division', 'purpose',
-                  'released_by', 'date_borrowed']
+        model = BorrowTransaction
+        fields = ['equipment', 'borrower_name', 'division', 'purpose', 'released_by']
+        
         widgets = {
-            'date_borrowed':   forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-            'purpose':         forms.Textarea(attrs={'rows': 3}),
+            'purpose': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': 'Enter purpose here...',
+            }),
+            'due_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['equipment'].empty_label = "Select Equipment"
-        self.fields['division'].empty_label = "Select Division"
-        self.fields['division'].queryset = Division.objects.all() 
-        self.fields['equipment'].queryset = Equipment.objects.filter(status='available')
-        self.fields['date_borrowed'].initial = timezone.now().strftime('%Y-%m-%dT%H:%M')
         for field in self.fields.values():
             field.widget.attrs.setdefault('class', 'form-control')
+
+class ReturnForm(forms.ModelForm):
+    class Meta:
+        model = BorrowTransaction
+        fields = ['returned_by', 'received_by', 'return_notes']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
 
 class DivisionForm(forms.ModelForm):
     class Meta:
@@ -63,10 +63,19 @@ class RegistrationForm(forms.Form):
         
         return cleaned_data
 
-class ReturnForm(forms.Form):
+class ReturnForm(forms.ModelForm):
     returned_by  = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control'}))
     received_by  = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control'}))
     return_notes = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}))
+    
+    class Meta:
+        model = BorrowTransaction
+        fields = ['returned_by', 'received_by', 'return_notes']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
     
 
 class EquipmentForm(forms.ModelForm):

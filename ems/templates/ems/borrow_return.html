@@ -1,0 +1,64 @@
+{% extends 'ems/base.html' %}
+{% block title %}Return Equipment{% endblock %}
+{% block page_title %}Return Equipment{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-md-11">
+            <div class="card shadow-sm border-0 rounded-0">
+                <div class="card-header bg-success text-white py-3 rounded-0">
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i class="bi bi-arrow-left-right me-2"></i> Return Equipment
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="mb-4 p-4 bg-light border-0 rounded-0">
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <label class="text-muted fw-bold small mb-1 d-block">EQUIPMENT</label>
+                                <span class="fs-4 fw-bold text-dark">{{ transaction.equipment.name }}</span>
+                            </div>
+                            <div class="col-md-6 ps-md-4">
+                                <label class="text-muted fw-bold small mb-1 d-block">CURRENT BORROWER</label>
+                                <span class="fs-4 fw-bold text-dark">{{ transaction.borrower_name }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold text-muted small mb-1">RETURNED BY <span class="text-danger">*</label>
+                                {{ form.returned_by }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold text-muted small mb-1">RECEIVED BY <span class="text-danger">*</label>
+                                {{ form.received_by }}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small mb-1">RETURN NOTES</label>
+                            {{ form.return_notes }}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success py-2 fw-bold rounded-1">
+                                Confirm Return
+                            </button>
+                            <a href="{% url 'history_logs' %}" class="btn btn-link text-muted text-decoration-none small">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

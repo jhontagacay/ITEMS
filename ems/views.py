@@ -11,7 +11,6 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-
 def signup(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -181,9 +180,9 @@ def borrow_create(request):
         if form.is_valid():
             txn = form.save(commit=False)
 
-            day = form.cleaned_data['due_date_day']
-            time = form.cleaned_data['due_date_time']
-            txn.due_date = datetime.combine(day, time)
+            # day = form.cleaned_data['due_date_day']
+            # time = form.cleaned_data['due_date_time']
+            # txn.due_date = datetime.combine(day, time)
             txn.save()
             txn.equipment.status = 'borrowed'
             txn.equipment.save()
@@ -201,17 +200,23 @@ def borrow_create(request):
     return render(request, 'ems/borrow.html', context)
 
 def borrow_return(request, pk):
-    txn = get_object_or_404(BorrowTransaction, pk=pk, status='ongoing')
-    form = ReturnForm(request.POST or None)
-    if form.is_valid():
-        txn.mark_returned(
-            returned_by=form.cleaned_data['returned_by'],
-            received_by=form.cleaned_data['received_by'],
-            notes=form.cleaned_data['return_notes'],
-        )
-        messages.success(request, f'"{txn.equipment.name}" has been returned.')
-        return redirect('history_logs')
-    return render(request, 'ems/return.html', {'form': form, 'txn': txn})
+    transaction = get_object_or_404(BorrowTransaction, pk=pk) 
+    
+    if request.method == 'POST':
+        form = ReturnForm(request.POST, instance=transaction)
+        if form.is_valid():
+            transaction.mark_returned(
+                returned_by=form.cleaned_data['returned_by'],
+                received_by=form.cleaned_data['received_by'],
+                notes=form.cleaned_data['return_notes']
+            )
+            return redirect('history_logs')
+    else:
+        form = ReturnForm(instance=transaction)
+    return render(request, 'ems/borrow_return.html', {
+        'form': form,
+        'transaction': transaction
+    })
 
 def history_logs(request):
     form = TransactionFilterForm(request.GET or None)

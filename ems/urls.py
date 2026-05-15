@@ -20,4 +20,5 @@ urlpatterns = [
     path('monthly_record/export/', views.monthly_record_export, name='monthly_record_export'),
     path('signup/', views.signup, name='signup_view'),
     path('password-reset/', views.password_reset, name='password_reset_view'),
+    path('transaction/<int:pk>/return/', views.borrow_return, name='borrow_return'),
 ]

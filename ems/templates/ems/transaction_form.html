@@ -40,7 +40,7 @@
             </select>
         </div>
 
-        <div class="row">
+        {% comment %} <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Date Borrowed</label>
                 <input type="datetime-local" name="date_borrowed" class="form-control" 
@@ -51,6 +51,16 @@
                 <input type="datetime-local" name="date_returned" class="form-control" 
                        value="{{ transaction.date_returned|date:'Y-m-d\TH:i' }}">
             </div>
+        </div> {% endcomment %}
+
+        <div class="info-group">
+            <label><strong>Date Borrowed</strong></label>
+            <div id="display_borrowed" class="text-data">—</div>
+        </div>
+
+        <div class="info-group">
+            <label><strong>Date Returned</strong></label>
+            <div id="display_returned" class="text-data">—</div>
         </div>
 
         <div class="d-flex gap-2 mt-4">
